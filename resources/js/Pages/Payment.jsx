@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
-import Header from "@/Components/Header";
+
 import { formatRupiah } from "@/helper/formatRupiah";
 import WelcomeLayout from "@/Layouts/WelcomeLayout";
 import Invoice from "./Invoice";
 
 export default function Payment({ payments }) {
     const [isSnapLoaded, setIsSnapLoaded] = useState(false);
-    const buttonRefs = useRef([]);
 
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
-        script.setAttribute("data-client-key", "YOUR_CLIENT_KEY"); // Ganti dengan kunci klien yang sebenarnya
+        script.setAttribute("data-client-key", "YOUR_CLIENT_KEY");
         script.onload = () => setIsSnapLoaded(true);
         document.head.appendChild(script);
 
@@ -21,41 +20,38 @@ export default function Payment({ payments }) {
         };
     }, []);
 
-    useEffect(() => {
-        if (isSnapLoaded) {
-            buttonRefs.current.forEach((btn, index) => {
-                if (btn) {
-                    btn.onclick = () => {
-                        const payment = payments[index];
-                        if (payment.snap_token) {
-                            window.snap.pay(payment.snap_token, {
-                                onSuccess: function (result) {
-                                    alert("Payment successful!");
-                                    updatePaymentStatus(payment.id, "success");
-                                },
-                                onPending: function (result) {
-                                    alert(
-                                        "Payment is pending. You will be notified once the payment is processed."
-                                    );
-                                    updatePaymentStatus(payment.id, "pending");
-                                },
-                                onError: function (result) {
-                                    alert("Payment failed. Please try again.");
-                                    updatePaymentStatus(payment.id, "failed");
-                                },
-                            });
-                        }
-                    };
-                }
+    const handlePayment = (snapToken, paymentId) => {
+        if (snapToken) {
+            window.snap.pay(snapToken, {
+                onSuccess: (result) => {
+                    alert("Payment successful!");
+                    updatePaymentStatus(paymentId, "success");
+                },
+                onPending: (result) => {
+                    alert(
+                        "Payment is pending. You will be notified once the payment is processed."
+                    );
+                    updatePaymentStatus(paymentId, "pending");
+                },
+                onError: (result) => {
+                    alert("Payment failed. Please try again.");
+                    updatePaymentStatus(paymentId, "failed");
+                },
             });
         }
-    }, [isSnapLoaded, payments]);
+    };
 
     const updatePaymentStatus = (paymentId, status) => {
         Inertia.post("/update-payment-status", {
             payment_id: paymentId,
             status: status,
-        });
+        })
+            .then(() => {
+                console.log("Status updated successfully");
+            })
+            .catch((error) => {
+                console.error("Error updating payment status", error);
+            });
     };
 
     return (
@@ -71,7 +67,7 @@ export default function Payment({ payments }) {
                         .filter((payment) => payment.status === "pending")
                         .map((payment, index) => (
                             <div className="space-y-4 mb-4" key={payment.id}>
-                                <details className="group" open>
+                                <details className="group" close>
                                     <summary className="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-gray-50 p-4 text-gray-900">
                                         <h2 className="font-medium">
                                             <p>Payment : {payment.id}</p>
@@ -153,10 +149,13 @@ export default function Payment({ payments }) {
                                             )
                                         )}
                                         <button
-                                            ref={(el) =>
-                                                (buttonRefs.current[index] = el)
-                                            }
                                             className="mt-4 py-2 px-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors"
+                                            onClick={() =>
+                                                handlePayment(
+                                                    payment.snap_token,
+                                                    payment.id
+                                                )
+                                            }
                                         >
                                             Pay Now
                                         </button>
@@ -168,7 +167,7 @@ export default function Payment({ payments }) {
             </section>
             <br />
             <hr />
-            <section>
+            <section className="mb-8">
                 <div>
                     <h1 className="font-bold text-3xl text-center">
                         Sudah bayar

@@ -1,3 +1,5 @@
+import { Component } from "@/Components/component/component";
+import { Footer } from "@/Components/component/footer";
 import Header from "@/Components/Header";
 import { formatRupiah } from "@/helper/formatRupiah";
 import WelcomeLayout from "@/Layouts/WelcomeLayout";
@@ -5,8 +7,6 @@ import { Inertia } from "@inertiajs/inertia";
 import React, { useEffect, useState } from "react";
 
 export default function Checkout({ orders }) {
-    console.log(orders);
-
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -43,12 +43,13 @@ export default function Checkout({ orders }) {
     if (!orders || orders.length === 0) {
         return (
             <div>
-                <Header />
-                <div className="fixed inset-0 bgbg-opacity-50 flex justify-center items-center pointer-events-none">
-                    <span className="pointer-events-auto text-black text-xl">
-                        Tidak ada Order
-                    </span>
-                </div>
+                <WelcomeLayout isFooterFixed={true}>
+                    <div className="mt-4 flex justify-center items-center pointer-events-none">
+                        <span className="pointer-events-auto text-black text-xl">
+                            Tidak ada Order
+                        </span>
+                    </div>
+                </WelcomeLayout>
             </div>
         );
     } else {

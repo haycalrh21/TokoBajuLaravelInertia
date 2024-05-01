@@ -19,9 +19,18 @@ Route::get('/about', function () {
 Route::get('/invoice', function () {
     return Inertia::render('Invoice');
 });
+
 Route::get('/test', function () {
-    return 'Laravel test is successful.';
+    return Inertia::render('Test');
 });
+
+
+
+
+
+// Route::get('/test', function () {
+//     return 'Laravel test is successful.';
+// });
 
 Route::get('/products', [HomeController::class, 'products'])->name('products');
 Route::get('/products/{id}', [HomeController::class, 'show'])->name('products.show');

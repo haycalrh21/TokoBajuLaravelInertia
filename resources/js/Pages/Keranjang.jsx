@@ -5,7 +5,6 @@ import { Inertia } from "@inertiajs/inertia";
 import WelcomeLayout from "@/Layouts/WelcomeLayout";
 
 export default function Keranjang({ keranjangs }) {
-    console.log(keranjangs);
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -24,7 +23,7 @@ export default function Keranjang({ keranjangs }) {
             .flat();
         setItems(flattenedItems);
     }, [keranjangs]);
-    console.log(items);
+
     const handleUpdateQuantity = (id, newQuantity) => {
         setLoading(true);
 
@@ -79,17 +78,18 @@ export default function Keranjang({ keranjangs }) {
     if (!keranjangs || keranjangs.length === 0) {
         return (
             <div>
-                <Header />
-                <div className="fixed inset-0 bgbg-opacity-50 flex justify-center items-center pointer-events-none">
-                    <span className="pointer-events-auto text-black text-xl">
-                        Tidak ada Order
-                    </span>
-                </div>
+                <WelcomeLayout isFooterFixed={true}>
+                    <div className="fixed flex justify-center items-center pointer-events-none">
+                        <span className="pointer-events-auto text-black text-xl">
+                            Tidak ada keranjang
+                        </span>
+                    </div>
+                </WelcomeLayout>
             </div>
         );
     } else {
         return (
-            <WelcomeLayout>
+            <WelcomeLayout isFooterFixed={true}>
                 {loading ? (
                     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                         <div

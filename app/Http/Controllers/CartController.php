@@ -57,7 +57,7 @@ class CartController extends Controller
             $cartDetail->save();
 
             DB::commit();
-            return response()->json(['message' => 'Product added or quantity updated in cart successfully']);
+            return redirect()->back();
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json(['error' => 'Failed to add or update the product in the cart', 'exception' => $th->getMessage()], 500);

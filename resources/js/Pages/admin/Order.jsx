@@ -1,10 +1,11 @@
 import AdminLayout from "@/Layouts/admin/AdminLayout";
 import React from "react";
 import { formatRupiah } from "@/helper/formatRupiah";
+import AdminCobaDeh from "@/Components/component/admin-page-layout";
 
 export default function Order({ payments }) {
     return (
-        <AdminLayout>
+        <AdminCobaDeh>
             <div>
                 <div>
                     <h1 className="font-bold text-3xl">Halaman Order</h1>
@@ -95,6 +96,6 @@ export default function Order({ payments }) {
                     </div>
                 </section>
             </div>
-        </AdminLayout>
+        </AdminCobaDeh>
     );
 }

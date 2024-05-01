@@ -1,10 +1,11 @@
+import AdminCobaDeh from "@/Components/component/admin-page-layout";
 import Pagination from "@/Components/Pagination";
 import AdminLayout from "@/Layouts/admin/AdminLayout";
 import React from "react";
 
 export default function User({ users }) {
     return (
-        <AdminLayout>
+        <AdminCobaDeh>
             <div>
                 <div>
                     <h1 className="font-bold text-3xl mb-4">Halaman User</h1>
@@ -51,6 +52,6 @@ export default function User({ users }) {
                     <Pagination links={users.links} />
                 </div>
             </div>
-        </AdminLayout>
+        </AdminCobaDeh>
     );
 }

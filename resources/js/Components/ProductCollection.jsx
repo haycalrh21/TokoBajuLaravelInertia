@@ -1,8 +1,8 @@
 import { formatRupiah } from "@/helper/formatRupiah";
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function ProductCollection({ products }) {
-    console.log(products);
     return (
         <section>
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
@@ -256,19 +256,29 @@ export default function ProductCollection({ products }) {
                                 href={`/products/${product.id}`}
                                 className="group block overflow-hidden"
                             >
-                                {/* Check if product has images and use a default if not */}
-                                <img
-                                    src={
-                                        product.images &&
-                                        product.images.length > 0
-                                            ? `/storage/${product.images[0].image_path.slice(
-                                                  7
-                                              )}`
-                                            : "/storage/default-image.jpg"
-                                    } // Fallback image path
-                                    alt={product.name || "Product image"} // Add alt text for accessibility
-                                    className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
-                                />
+                                <motion.div
+                                    className="box"
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                        duration: 0.8,
+                                        delay: 0.5,
+                                        ease: [0, 0.71, 0.2, 1.01],
+                                    }}
+                                >
+                                    <img
+                                        src={
+                                            product.images &&
+                                            product.images.length > 0
+                                                ? `/storage/${product.images[0].image_path.slice(
+                                                      7
+                                                  )}`
+                                                : "/storage/default-image.jpg"
+                                        } // Fallback image path
+                                        alt={product.name || "Product image"} // Add alt text for accessibility
+                                        className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+                                    />
+                                </motion.div>
 
                                 <div className="relative bg-white pt-3">
                                     <h3 className="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4">

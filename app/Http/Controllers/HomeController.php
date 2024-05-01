@@ -26,7 +26,7 @@ class HomeController extends Controller
     public function show($id)
     {
         $products = Products::with(['sizes', 'images'])->findOrFail($id);
-        return Inertia::render('PageId', ['products' => $products]);
+        return Inertia::render('Test', ['products' => $products]);
     }
     public function keranjang()
     {

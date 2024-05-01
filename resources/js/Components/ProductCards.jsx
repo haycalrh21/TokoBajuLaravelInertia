@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { formatRupiah } from "@/helper/formatRupiah";
+import { motion, useScroll } from "framer-motion";
 
 export default function ProductCards({ products }) {
     return (
@@ -19,7 +20,11 @@ export default function ProductCards({ products }) {
                         key={product.id}
                         className="group block overflow-hidden"
                     >
-                        <div className="relative border border-gray-100 bg-white p-20">
+                        <motion.div
+                            whileHover={{ scale: [null, 1.5, 1.4] }}
+                            transition={{ duration: 3.0 }}
+                            className="relative border border-gray-100 bg-white p-20"
+                        >
                             {/* Gambar pertama dan kedua produk */}
                             <img
                                 src={
@@ -33,7 +38,7 @@ export default function ProductCards({ products }) {
                                 alt={`Gambar produk ${product.name}`}
                                 className="absolute inset-0 h-full w-full object-cover opacity-100 group-hover:opacity-75"
                             />
-                        </div>
+                        </motion.div>
 
                         <div className="relative border border-gray-100 bg-white p-6">
                             <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">

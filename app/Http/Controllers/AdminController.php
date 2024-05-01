@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\PaymentDetail;
 use App\Models\Products;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,7 +21,22 @@ class AdminController extends Controller
         $usersCount = User::count();
         $productCount = Products::count();
         $orderCount = Payment::count();
-        return Inertia::render('admin/Dashboard', ['usersCount' => $usersCount, 'productCount' => $productCount, 'orderCount' => $orderCount]);
+        $totalPenjualan = Payment::where('status', 'success')->sum('total_harga');
+        $topSelling = PaymentDetail::with(['payment', 'product'])
+            ->whereHas('payment', function ($query) {
+                $query->where('status', 'success');
+            })
+            ->get()
+            ->groupBy('product.name') // Group by product name
+            ->map(function ($group) {
+                return [
+                    'product_name' => $group->first()->product->name,
+                    'total_quantity' => $group->sum('quantity'),
+                    'harga_baju' => $group->first()->product->harga
+                ];
+            });
+
+        return Inertia::render('admin/Dashboard', ['usersCount' => $usersCount, 'productCount' => $productCount, 'orderCount' => $orderCount, 'totalPenjualan' => $totalPenjualan, 'topSelling' => $topSelling]);
     }
 
     public function users()
@@ -56,8 +72,8 @@ class AdminController extends Controller
             'harga' => 'required|numeric',
             'description' => 'nullable|string',
             'sizes' => 'required|array',
-            'images' => 'sometimes|array', // Validasi untuk gambar, pastikan input name='images[]' di form
-            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048', // Setiap gambar haruslah file image dan ukuran maksimal 2MB
+            'images' => 'sometimes|array',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
         DB::beginTransaction();
@@ -82,16 +98,17 @@ class AdminController extends Controller
             }
 
             // Menangani upload gambar
-            if ($request->has('images')) {
+            if ($request->has('images') && is_array($request->file('images'))) {
                 foreach ($request->file('images') as $image) {
-                    $path = $image->store('public/product_images'); // Menyimpan gambar di storage
-                    $product->images()->create([
-                        'image_path' => $path // Menyimpan path gambar ke database
-                    ]);
+                    if ($image) {  // Pastikan $image valid
+                        $path = $image->store('public/product_images');
+                        $product->images()->create(['image_path' => $path]);
+                    }
                 }
             }
 
             DB::commit();
+
             return redirect()->route('admin.dashboard')->with('success', 'Product added successfully!');
         } catch (\Throwable $th) {
             DB::rollBack();

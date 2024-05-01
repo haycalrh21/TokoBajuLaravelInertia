@@ -146,39 +146,6 @@ const DetailPage = ({ products }) => {
                     </div>
                 </div>
             </section>
-            <section>
-                <div className="mt-8">
-                    <h3 className="text-sm font-semibold text-gray-700">
-                        Leave a Comment:
-                    </h3>
-                    <textarea
-                        value={comment}
-                        onChange={handleCommentChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                        rows="3"
-                    />
-                    <button
-                        className="mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-                        onClick={handleAddComment}
-                    >
-                        Add Comment
-                    </button>
-                </div>
-                <div className="mt-4">
-                    <h3 className="text-sm font-semibold text-gray-700">
-                        Comments:
-                    </h3>
-                    {comments.length > 0 ? (
-                        <ul className="list-disc list-inside">
-                            {comments.map((comment, index) => (
-                                <li key={index}>{comment}</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No comments yet.</p>
-                    )}
-                </div>
-            </section>
         </div>
     );
 };
